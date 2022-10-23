@@ -6,6 +6,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
 const NotAuthError = require('../errors/NotAuthError');
+const { JWT_SECRET_DEV } = require('../constants/configConstants');
 
 const createUser = (req, res, next) => {
   const {
@@ -41,7 +42,7 @@ const login = (req, res, next) => {
       if (!user) {
         next(new NotAuthError('Ошибка авторизации.'));
       }
-      const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'super-strong-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : JWT_SECRET_DEV, { expiresIn: '7d' });
       res
         .cookie('jwt', token, {
           httpOnly: true,

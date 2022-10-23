@@ -1,4 +1,4 @@
-const { allowedCors, DEFAULT_ALLOWED_METHODS } = require('../constants/index');
+const { allowedCors, DEFAULT_ALLOWED_METHODS } = require('../constants/corsConstants');
 
 const cors = (req, res, next) => {
   const { method } = req;
