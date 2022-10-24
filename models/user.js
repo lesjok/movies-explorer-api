@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { default: isEmail } = require('validator/lib/isEmail');
+const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const NotAuthError = require('../errors/NotAuthError');
 
@@ -8,13 +8,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
+    required: true,
   },
   email: {
     type: String,
     unique: true,
     required: true,
-    validate: {
-      validator: isEmail,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error('Введите корректный email.');
+      }
     },
   },
   password: {
@@ -23,7 +26,7 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 }, { versionKey: false });
-// eslint-disable-next-line func-names
+
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {

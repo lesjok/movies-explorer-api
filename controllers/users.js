@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -60,7 +59,7 @@ const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError());
+        return next(new NotFoundError('Пользователь не найден.'));
       }
       return res.send(user);
     })
@@ -75,16 +74,17 @@ const updateUser = (req, res, next) => {
     { name, email },
     { new: true, runValidators: true, upsert: false },
   )
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь не найден.'));
+        next(new NotFoundError('Пользователь не найден.'));
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Данные некорректны'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с данным email уже существует!'));
       } else {
         next(err);
       }
