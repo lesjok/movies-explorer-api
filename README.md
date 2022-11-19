@@ -1,3 +1,3 @@
 # movies-explorer-api
 
-Ссылка на домен: https://api.explorer-movies.nomoredomains.icu/
+Ссылка на домен: https://explorer-movies.04.pe/
